@@ -27,13 +27,13 @@ const users = [
 
 const Joi = require('joi');
 
-const schema = Joi.object({
-    nombre: Joi.string()
-        .min(3)
-        .max(30)
-        .required()
+// const schema = Joi.object({
+//     nombre: Joi.string()
+//         .min(3)
+//         .max(30)
+//         .required()
 
-});
+// });
 
 
 app.use(express.json());
@@ -61,7 +61,7 @@ app.get('/api/users', (req, res) => {
 
 app.get('/api/users/:id', (req, res) => {
 
-    let usuario = users.find(u => u.id === parseInt(req.params.id))
+    let usuario = existeUsuario(req.params.id)
 
     if (!usuario) res.status(404).send('Disculpa capo el usuario no se encontró')
     res.send(`El usuario ${usuario.id} es ${usuario.nombre}`)
@@ -71,6 +71,13 @@ app.get('/api/users/:id', (req, res) => {
 
 app.post('/api/users', (req, res) => {
 
+    const schema = Joi.object({
+        nombre: Joi.string()
+            .min(3)
+            .max(30)
+            .required()
+
+    });
 
     const {
         error,
@@ -99,25 +106,36 @@ app.post('/api/users', (req, res) => {
 app.put('/api/users/:id', (req, res) => {
     //Validación para encontrar si es que existe el usuario a modificar  
 
-    let usuario = users.find(u => u.id === parseInt(req.params.id))
-    if (!usuario) res.status(404).send('Disculpa capo el usuario no se encontró')
-    res.send(`El usuario ${usuario.id} es ${usuario.nombre}`)
+    //let usuario = users.find(u => u.id === parseInt(req.params.id))
+    let usuario = existeUsuario(req.params.id)
+    if (!usuario) {
+        res.status(404).send('Disculpa capo el usuario no se encontró')
+        return
+    }
 
+        const schema = Joi.object({
+        nombre: Joi.string()
+            .min(3)
+            .max(30)
+            .required()
 
+    });
+    
     const {
         error,
         value
-    } = schema.validate({
-        nombre: req.body.nombre
-    });
+    } = validarUsuario(req.body.nombre);
+
+
     if (error) {
         const msj = error.details[0].message;
         res.status(400).send(msj)
-        }
+        return;
+    }
 
-        usuario.nombre= value.nombre;
-        res.send(usuario);
-    
+    usuario.nombre = value.nombre;
+    res.send(usuario);
+
 
 });
 
@@ -125,8 +143,31 @@ app.put('/api/users/:id', (req, res) => {
 const port = process.env.PORT || 3000; //Creamos un a variable de entorno si existe el puerto, si no, en el puerto 3000
 
 
+
 app.listen(port, () => {
 
     console.log(`Escuchando en el puerto ${port}...`);
 
 })
+
+function existeUsuario(id) {
+
+    return (users.find(u => u.id === parseInt(id)));
+
+}
+
+function validarUsuario(nom) {
+
+    const schema = Joi.object({
+        nombre: Joi.string()
+            .min(3)
+            .max(30)
+            .required()
+
+    });
+
+    return (schema.validate({
+        nombre: nom
+    }))
+
+}
