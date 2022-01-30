@@ -82,9 +82,7 @@ app.post('/api/users', (req, res) => {
     const {
         error,
         value
-    } = schema.validate({
-        nombre: req.body.nombre
-    });
+    } = validarUsuario(req.body.nombre)
     if (!error) {
         const usuario = {
 
@@ -104,9 +102,7 @@ app.post('/api/users', (req, res) => {
 });
 
 app.put('/api/users/:id', (req, res) => {
-    //Validación para encontrar si es que existe el usuario a modificar  
 
-    //let usuario = users.find(u => u.id === parseInt(req.params.id))
     let usuario = existeUsuario(req.params.id)
     if (!usuario) {
         res.status(404).send('Disculpa capo el usuario no se encontró')
