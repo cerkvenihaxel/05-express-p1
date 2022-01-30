@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
 app.get('/api/users', (req, res) => {
 
 
-    res.send(['Axel', 'Agus', 'Pablo'])
+    res.send(users)
 
 
 });
@@ -110,20 +110,14 @@ app.put('/api/users/:id', (req, res) => {
     } = schema.validate({
         nombre: req.body.nombre
     });
-    if (!error) {
-        const usuario = {
-
-            id: users.length + 1,
-            nombre: value.nombre
-        }
-
-        users.push(usuario);
-        res.send(usuario);
-
-    } else {
+    if (error) {
         const msj = error.details[0].message;
         res.status(400).send(msj)
-    }
+        }
+
+        usuario.nombre= value.nombre;
+        res.send(usuario);
+    
 
 });
 
