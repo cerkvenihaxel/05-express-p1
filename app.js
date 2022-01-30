@@ -13,20 +13,23 @@ const app = express(); //Creamos una instancia de express
 
 app.get('/', (req, res) => {
 
-res.send('Bienvenides chiques como están todo bien')
+    res.send('Bienvenides chiques como están todo bien')
 
-}) 
+})
 
 app.get('/api/users', (req, res) => {
 
 
-res.send(['Axel', 'Agus', 'Pablo'])
+    res.send(['Axel', 'Agus', 'Pablo'])
 
 
 });
 
-app.listen(3000, () => {
+const port = process.env.PORT || 3000 ; //Creamos un a variable de entorno si existe el puerto, si no, en el puerto 3000
 
-console.log("Escuchando en el puerto 3000...")
+
+app.listen(port, () => {
+
+    console.log(`Escuchando en el puerto ${port}...`);
 
 })
