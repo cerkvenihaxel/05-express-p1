@@ -25,7 +25,14 @@ app.get('/api/users', (req, res) => {
 
 });
 
-const port = process.env.PORT || 3000 ; //Creamos un a variable de entorno si existe el puerto, si no, en el puerto 3000
+app.get('/api/users/:year/:month', (req, res) => {
+
+    res.send(req.params);
+
+}) 
+
+
+const port = process.env.PORT || 3000; //Creamos un a variable de entorno si existe el puerto, si no, en el puerto 3000
 
 
 app.listen(port, () => {
